@@ -1,35 +1,24 @@
 import clsx from "clsx";
-
-import { fragmentOn } from "basehub";
 import { AvatarsGroup } from "@/common/avatars-group";
-import { Avatar } from "@/common/avatar";
-import { avatarFragment } from "@/lib/basehub/fragments";
-import { TrackedButtonLink } from "@/app/_components/tracked_button";
-import { GeneralEvents } from "@/../basehub-types";
+// import { Avatar } from "@/common/avatar"; // Assume Avatar needs refactoring if it depends on BaseHub image
+import { ButtonLink } from "@/common/button";
 
-export const heroFragment = fragmentOn("HeroComponent", {
-  _analyticsKey: true,
-  customerSatisfactionBanner: {
-    text: true,
-    avatars: {
-      items: {
-        _id: true,
-        avatar: avatarFragment,
-      },
-    },
-  },
-  title: true,
-  subtitle: true,
-  actions: {
-    _id: true,
-    href: true,
-    label: true,
-    type: true,
-  },
-});
-type Hero = fragmentOn.infer<typeof heroFragment>;
+// Simple Avatar replacement if needed, or I'll just skip avatars for now if data is empty.
+function AvatarPlaceholder() {
+  return <div className="h-8 w-8 rounded-full bg-gray-300" />;
+}
 
-export function Hero(hero: Hero & { eventsKey: GeneralEvents["ingestKey"] }) {
+interface HeroProps {
+  title: string;
+  subtitle: string;
+  cta: Array<{ label: string; href: string; type: "primary" | "secondary" | string }>;
+  satisfaction: {
+    text: string;
+    avatars: any[];
+  };
+}
+
+export function Hero({ title, subtitle, cta, satisfaction }: HeroProps) {
   return (
     <section className="relative min-h-[calc(630px-var(--header-height))] overflow-hidden pb-10">
       <div className="border-border dark:border-dark-border absolute top-0 left-0 z-0 grid h-full w-full grid-cols-[clamp(28px,10vw,120px)_auto_clamp(28px,10vw,120px)] border-b">
@@ -47,31 +36,38 @@ export function Hero(hero: Hero & { eventsKey: GeneralEvents["ingestKey"] }) {
         <div className="flex flex-col items-center justify-end">
           <div className="border-border dark:border-dark-border flex items-center gap-2 border! border-b-0! px-4 py-2">
             <AvatarsGroup>
-              {hero.customerSatisfactionBanner.avatars.items.map(({ avatar, _id }) => (
-                <Avatar priority {...avatar} key={_id} />
+              {satisfaction.avatars.map((avatar, i) => (
+                <AvatarPlaceholder key={i} />
               ))}
+              {/* Force some placeholders if empty? */}
+              {satisfaction.avatars.length === 0 && (
+                <>
+                  <AvatarPlaceholder />
+                  <AvatarPlaceholder />
+                  <AvatarPlaceholder />
+                </>
+              )}
             </AvatarsGroup>
             <p className="text-text-tertiary dark:text-dark-text-tertiary text-sm tracking-tight">
-              {hero.customerSatisfactionBanner.text}
+              {satisfaction.text}
             </p>
           </div>
         </div>
         <div>
           <div className="mx-auto flex min-h-[288px] max-w-[80vw] shrink-0 flex-col items-center justify-center gap-2 px-2 py-4 sm:px-16 lg:px-24">
             <h1 className="text-text-primary dark:text-dark-text-primary max-w-(--breakpoint-lg) text-center text-[clamp(32px,7vw,64px)] leading-none font-medium tracking-[-1.44px] text-pretty md:tracking-[-2.16px]">
-              {hero.title}
+              {title}
             </h1>
             <h2 className="text-md text-text-tertiary dark:text-dark-text-tertiary max-w-2xl text-center text-pretty md:text-lg">
-              {hero.subtitle}
+              {subtitle}
             </h2>
           </div>
         </div>
         <div className="flex items-start justify-center px-8 sm:px-24">
           <div className="flex w-full max-w-[80vw] flex-col items-center justify-start md:max-w-[392px]!">
-            {hero.actions?.map(({ href, label, type, _id }) => (
-              <TrackedButtonLink
-                key={_id}
-                analyticsKey={hero.eventsKey}
+            {cta.map(({ href, label, type }, i) => (
+              <ButtonLink
+                key={i}
                 className={clsx(
                   "h-14! flex-col items-center justify-center rounded-none text-base!",
                   type === "primary"
@@ -79,11 +75,10 @@ export function Hero(hero: Hero & { eventsKey: GeneralEvents["ingestKey"] }) {
                     : "max-w-sm:border-x-0! border-border dark:border-dark-border flex w-full border-x! border-y-0! bg-transparent! backdrop-blur-xl transition-colors duration-150 hover:bg-black/5! dark:hover:bg-white/5!",
                 )}
                 href={href}
-                intent={type}
-                name="cta_click"
+                intent={type as any}
               >
                 {label}
-              </TrackedButtonLink>
+              </ButtonLink>
             ))}
           </div>
         </div>

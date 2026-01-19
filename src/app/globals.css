@@ -2,6 +2,11 @@
 
 @config '../../tailwind.config.ts';
 
+@theme {
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
 /*
   The default border color has changed to `currentColor` in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still
@@ -28,33 +33,61 @@
   -webkit-font-smoothing: antialiased;
   -moz-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Grayscale (Slate) */
+  --grayscale-rgb-50: 248, 250, 252;
+  --grayscale-rgb-100: 241, 245, 249;
+  --grayscale-rgb-200: 226, 232, 240;
+  --grayscale-rgb-300: 203, 213, 225;
+  --grayscale-rgb-400: 148, 163, 184;
+  --grayscale-rgb-500: 100, 116, 139;
+  --grayscale-rgb-600: 71, 85, 105;
+  --grayscale-rgb-700: 51, 65, 85;
+  --grayscale-rgb-800: 30, 41, 59;
+  --grayscale-rgb-900: 15, 23, 42;
+  --grayscale-rgb-950: 2, 6, 23;
+
+  /* Accent (Indigo/Blue) */
+  --accent-rgb-50: 238, 242, 255;
+  --accent-rgb-100: 224, 231, 255;
+  --accent-rgb-200: 199, 210, 254;
+  --accent-rgb-300: 165, 180, 252;
+  --accent-rgb-400: 129, 140, 248;
+  --accent-rgb-500: 99, 102, 241;
+  --accent-rgb-600: 79, 70, 229;
+  --accent-rgb-700: 67, 56, 202;
+  --accent-rgb-800: 55, 48, 163;
+  --accent-rgb-900: 49, 46, 129;
+  --accent-rgb-950: 30, 27, 75;
+
+  --text-on-accent: 255, 255, 255;
 }
 
 :root:not(html.dark) {
   /* colors */
-  color: var(--text-primary);
-  background-color: var(--surface-primary);
+  color: rgba(var(--grayscale-rgb-950), 1);
+  background-color: rgba(var(--grayscale-rgb-50), 1);
 }
 
 :root:not(html.dark) ::selection {
-  background-color: var(--accent-200);
+  background-color: rgba(var(--accent-rgb-200), 1);
 }
 
 :root:not(html.dark) *:focus-visible {
-  outline-color: var(--accent-300);
+  outline-color: rgba(var(--accent-rgb-300), 1);
 }
 
 :root {
-  color: var(--dark-text-primary);
-  background-color: var(--dark-surface-primary);
+  color: rgba(var(--grayscale-rgb-50), 1);
+  background-color: rgba(var(--grayscale-rgb-950), 1);
 }
 
 :root ::selection {
-  background-color: var(--accent-950);
+  background-color: rgba(var(--accent-rgb-950), 1);
 }
 
 :root *:focus-visible {
-  outline-color: var(--accent-400);
+  outline-color: rgba(var(--accent-rgb-400), 1);
 }
 
 .no-scrollbar::-webkit-scrollbar {
